@@ -1,0 +1,5 @@
+conf.json
+dist
+models
+.env
+node_modules
