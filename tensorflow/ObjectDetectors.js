@@ -22,6 +22,7 @@ module.exports = function(config){
     // const mobilenet = require('@tensorflow-models/mobilenet');
 
     const fetch = require("node-fetch");
+    const fs = require('fs');
 
     async function loadCocoSsdModal() {
         const modal = await cocossd.load({
@@ -72,8 +73,10 @@ module.exports = function(config){
               data: predictions,
               image: this.inputImage.toString('base64')
             }
-            console.log(myBody)
-            const response = await fetch('http://127.0.0.1:8000/camera/alert', {
+            let rawdata = fs.readFileSync('config.json');
+            let data = JSON.parse(rawdata);
+
+            const response = await fetch('http://'+data.ip_address+':8000/camera/alert', {
               method: 'POST',
               body: JSON.stringify(myBody), // string or object
               headers: {
@@ -88,4 +91,4 @@ module.exports = function(config){
             }
         }
     }
-  }  
+  }
