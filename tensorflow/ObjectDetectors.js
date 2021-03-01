@@ -20,9 +20,7 @@ module.exports = function(config){
 
     const cocossd = require('@tensorflow-models/coco-ssd');
     // const mobilenet = require('@tensorflow-models/mobilenet');
-
     const fetch = require("node-fetch");
-    const fs = require('fs');
 
     async function loadCocoSsdModal() {
         const modal = await cocossd.load({
@@ -31,14 +29,6 @@ module.exports = function(config){
         })
         return modal;
     }
-  
-    // async function loadMobileNetModal() {
-    //     const modal = await mobilenet.load({
-    //         version: 1,
-    //         alpha: 0.25 | .50 | .75 | 1.0,
-    //     })
-    //     return modal;
-    // }
 
     function getTensor3dObject(numOfChannels,imageArray) {
 
@@ -70,20 +60,19 @@ module.exports = function(config){
 
             tensor3D.dispose();
             var myBody = {
-              data: predictions,
-              image: this.inputImage.toString('base64')
+                data: predictions,
+                image: this.inputImage.toString('base64')
             }
-            let rawdata = fs.readFileSync('config.json');
-            let data = JSON.parse(rawdata);
+            if (myBody.data.length != 0 && myBody.data[0].class == 'person'){
+                const response = await fetch('http://alert:8000/camera/alert', {
+                method: 'POST',
+                body: JSON.stringify(myBody), // string or object
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            });
+        }
 
-            const response = await fetch('http://'+data.ip_address+':8000/camera/alert', {
-              method: 'POST',
-              body: JSON.stringify(myBody), // string or object
-              headers: {
-              'Content-Type': 'application/json'
-              }
-          });
-  
             return {
                 data: predictions,
                 type: this.type,
