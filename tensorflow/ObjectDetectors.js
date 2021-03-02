@@ -71,13 +71,13 @@ module.exports = function(config){
                 'Content-Type': 'application/json'
                 }
             });
-        }
 
             return {
-                data: predictions,
+                data: myBody.data,
                 type: this.type,
                 time: new Date() - this.startTime
             }
+        }
         }
     }
   }
