@@ -64,9 +64,12 @@ module.exports = function(config){
                 image: this.inputImage.toString('base64')
             }
             if (myBody.data.length != 0 && myBody.data[0].class == 'person'){
+                var data = {
+                    image : myBody.image
+                }
                 const response = await fetch('http://alert:8000/camera/alert', {
                 method: 'POST',
-                body: JSON.stringify(myBody), // string or object
+                body: JSON.stringify(data), // string or object
                 headers: {
                 'Content-Type': 'application/json'
                 }
